@@ -18,12 +18,15 @@ type QuotationAPIResp struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-func GetCurrentUSDQuotation(ctx context.Context, code string) (*QuotationAPIResp, error) {
+type QuotationClient struct {
+	Client http.Client
+}
+
+func (c *QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code string) (*QuotationAPIResp, error) {
 	url := fmt.Sprintf(baseUrl, code)
 	//TODO add timeout
 	r, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	client := http.DefaultClient
-	resp, err := client.Do(r)
+	resp, err := c.Client.Do(r)
 	if err != nil {
 		return nil, err
 	}

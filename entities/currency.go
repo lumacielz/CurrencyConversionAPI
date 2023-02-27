@@ -6,15 +6,15 @@ import (
 )
 
 type Currency struct {
-	Code              string
-	Name              string
-	USDConversionRate float64
-	UpdatedAt         time.Time
+	Code              string    `bson:"code"`
+	Name              string    `bson:"name"`
+	USDConversionRate float64   `bson:"USDConversionRate"`
+	UpdatedAt         time.Time `bson:"updatedAt"`
 }
 
 type CurrencyRepository interface {
 	Get(ctx context.Context, code string) (Currency, error)
-	//Create(currency Currency) error
-	//Update(currency Currency) error
-	//Delete(code string) error
+	Create(ctx context.Context, currency Currency) error
+	Update(ctx context.Context, currency Currency) error
+	Delete(ctx context.Context, code string) error
 }
