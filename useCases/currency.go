@@ -6,7 +6,7 @@ import (
 )
 
 type CurrencyUseCase struct {
-	Repository entities.CurrencyRepository
+	CurrencyRepository entities.CurrencyRepository
 }
 
 //TODO mover para presenter
@@ -17,12 +17,12 @@ type CurrencyResponse struct {
 
 func (c CurrencyUseCase) Convert(amount float64, from, to string) (CurrencyResponse, error) {
 	//TODO usar errgroup
-	originCurrencyData, err := c.Repository.Get(context.Background(), from)
+	originCurrencyData, err := c.CurrencyRepository.Get(context.Background(), from)
 	if err != nil {
 		return CurrencyResponse{}, err
 	}
 
-	destinationCurrencyData, err := c.Repository.Get(context.Background(), to)
+	destinationCurrencyData, err := c.CurrencyRepository.Get(context.Background(), to)
 	if err != nil {
 		return CurrencyResponse{}, err
 	}

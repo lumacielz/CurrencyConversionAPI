@@ -27,8 +27,8 @@ func main() {
 	}()
 	collection := client.Database("challenge-bravo").Collection("currencies")
 
-	mongoClient := database.Client{Database: collection}
-	currencyUseCase := useCases.CurrencyUseCase{Repository: mongoClient}
+	mongoClient := database.Client{Collection: collection}
+	currencyUseCase := useCases.CurrencyUseCase{CurrencyRepository: mongoClient}
 	currencyController := handlers.CurrencyController{currencyUseCase}
 
 	r := chi.NewRouter()

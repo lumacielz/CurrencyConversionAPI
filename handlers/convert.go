@@ -22,5 +22,6 @@ func (c CurrencyController) GetConversionHandler(w http.ResponseWriter, r *http.
 	}
 
 	respJson, _ := json.Marshal(resp)
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(respJson)
 }
