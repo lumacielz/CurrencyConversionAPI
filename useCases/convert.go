@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func (c *CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to string) (CurrencyResponse, error) {
+func (c CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to string) (CurrencyResponse, error) {
 	originCurrencyDataC := make(chan entities.Currency, 1)
 	destinationCurrencyDataC := make(chan entities.Currency, 1)
 
@@ -57,7 +57,7 @@ func (c *CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to 
 }
 
 //TODO revisar se faz sentido ignorar erro
-func (c *CurrencyUseCase) UpdateCurrencyData(ctx context.Context, code string) error {
+func (c CurrencyUseCase) UpdateCurrencyData(ctx context.Context, code string) error {
 	resp, err := c.QuotationClient.GetCurrentUSDQuotation(ctx, code)
 
 	if err != nil {

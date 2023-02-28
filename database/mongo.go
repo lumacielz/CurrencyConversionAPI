@@ -13,19 +13,19 @@ type Client struct {
 	Collection *mongo.Collection
 }
 
-func (c *Client) Get(ctx context.Context, code string) (entities.Currency, error) {
+func (c Client) Get(ctx context.Context, code string) (entities.Currency, error) {
 	var currency entities.Currency
 	err := c.Collection.FindOne(ctx, bson.M{"code": code}).Decode(&currency)
 	return currency, err
 }
 
-func (c *Client) Create(ctx context.Context, currency entities.Currency) error {
+func (c Client) Create(ctx context.Context, currency entities.Currency) error {
 	currency.UpdatedAt = time.Now()
 	_, err := c.Collection.InsertOne(ctx, currency)
 	return err
 }
 
-func (c *Client) UpInsert(ctx context.Context, currency entities.Currency) error {
+func (c Client) UpInsert(ctx context.Context, currency entities.Currency) error {
 	opts := options.Update().SetUpsert(true)
 	filter := bson.M{"code": currency.Code}
 
@@ -35,10 +35,10 @@ func (c *Client) UpInsert(ctx context.Context, currency entities.Currency) error
 	return err
 }
 
-func (c *Client) Update(ctx context.Context, code string, currency entities.Currency) error {
+func (c Client) Update(ctx context.Context, code string, currency entities.Currency) error {
 	filter := bson.M{"code": code}
 
-	var updatedCurrency bson.M
+	updatedCurrency := bson.M{}
 	if currency.Name != "" {
 		updatedCurrency["name"] = currency.Name
 	}
@@ -53,7 +53,7 @@ func (c *Client) Update(ctx context.Context, code string, currency entities.Curr
 	return err
 }
 
-func (c *Client) Delete(ctx context.Context, code string) error {
+func (c Client) Delete(ctx context.Context, code string) error {
 	filter := bson.M{"code": code}
 	res, err := c.Collection.DeleteOne(ctx, filter)
 

@@ -5,7 +5,7 @@ import (
 	"github.com/lumacielz/challenge-bravo/entities"
 )
 
-func (c *CurrencyUseCase) NewCurrency(ctx context.Context, currency CurrencyRequest) error {
+func (c CurrencyUseCase) NewCurrency(ctx context.Context, currency CurrencyRequest) error {
 	currencyEntity := entities.Currency{
 		Code:              currency.Code,
 		Name:              currency.Name,
