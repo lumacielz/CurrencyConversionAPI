@@ -7,23 +7,33 @@ import (
 )
 
 type CurrencyOutput interface {
-	WriteResponse(w http.ResponseWriter, response useCases.CurrencyResponse) error
+	WriteResponse(w http.ResponseWriter, response *useCases.CurrencyResponse, status int) error
 	WriteError(w http.ResponseWriter, err error, status int)
 }
 
-type JsonPresenter struct{}
+type CurrencyInput interface {
+	Parse(body []byte) (useCases.CurrencyRequest, error)
+}
 
 type JsonFormatError struct {
 	Error string `json:"error"`
 }
 
-func (p JsonPresenter) WriteResponse(w http.ResponseWriter, response useCases.CurrencyResponse) error {
+type JsonPresenter struct{}
+
+func (p JsonPresenter) Parse(body []byte) (useCases.CurrencyRequest, error) {
+	var req useCases.CurrencyRequest
+	err := json.Unmarshal(body, &req)
+	return req, err
+}
+
+func (p JsonPresenter) WriteResponse(w http.ResponseWriter, response *useCases.CurrencyResponse, status int) error {
 	respJson, err := json.Marshal(response)
 	if err != nil {
 		return err
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(status)
 	w.Write(respJson)
 	return nil
 }

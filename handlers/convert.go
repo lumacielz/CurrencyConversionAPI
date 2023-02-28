@@ -8,8 +8,9 @@ import (
 )
 
 type CurrencyController struct {
-	UseCase   useCases.CurrencyUseCase
-	Presenter presenters.CurrencyOutput
+	UseCase         useCases.CurrencyUseCase
+	OutputPresenter presenters.CurrencyOutput
+	InputPresenter  presenters.CurrencyInput
 }
 
 func (c CurrencyController) GetConversionHandler(w http.ResponseWriter, r *http.Request) {
@@ -22,8 +23,9 @@ func (c CurrencyController) GetConversionHandler(w http.ResponseWriter, r *http.
 	resp, err := c.UseCase.Convert(ctx, amount, from, to)
 
 	if err != nil {
-		c.Presenter.WriteError(w, err, 500)
+		c.OutputPresenter.WriteError(w, err, 500)
+		return
 	}
 
-	c.Presenter.WriteResponse(w, resp)
+	c.OutputPresenter.WriteResponse(w, &resp, http.StatusOK)
 }

@@ -10,7 +10,6 @@ type CurrencyUseCase struct {
 	QuotationClient    external.QuotationClient
 }
 
-//TODO mover para presenter
 type CurrencyResponse struct {
 	Value    float64 `json:"value"`
 	Currency string  `json:"currency"`

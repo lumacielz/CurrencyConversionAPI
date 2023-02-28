@@ -31,11 +31,14 @@ func main() {
 
 	mongoClient := database.Client{Collection: collection}
 	currencyUseCase := useCases.CurrencyUseCase{CurrencyRepository: &mongoClient, QuotationClient: external.QuotationClient{http.DefaultClient}}
-	currencyController := handlers.CurrencyController{UseCase: currencyUseCase, Presenter: presenters.JsonPresenter{}}
+	currencyController := handlers.CurrencyController{UseCase: currencyUseCase, OutputPresenter: presenters.JsonPresenter{}, InputPresenter: presenters.JsonPresenter{}}
 
 	r := chi.NewRouter()
 
 	r.Get("/currency", currencyController.GetConversionHandler)
+	r.Post("/currency/new", currencyController.NewCurrencyHandler)
+	r.Put("/currency/{code}", nil)
+	r.Delete("/currency/{code}", nil)
 
 	http.ListenAndServe(":8080", r)
 }
