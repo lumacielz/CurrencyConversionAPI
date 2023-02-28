@@ -7,7 +7,7 @@ import (
 )
 
 type CurrencyOutput interface {
-	WriteResponse(w http.ResponseWriter, response *useCases.CurrencyResponse, status int) error
+	WriteResponse(w http.ResponseWriter, response interface{}, status int) error
 	WriteError(w http.ResponseWriter, err error, status int)
 }
 
@@ -27,7 +27,7 @@ func (p JsonPresenter) Parse(body []byte) (useCases.CurrencyRequest, error) {
 	return req, err
 }
 
-func (p JsonPresenter) WriteResponse(w http.ResponseWriter, response *useCases.CurrencyResponse, status int) error {
+func (p JsonPresenter) WriteResponse(w http.ResponseWriter, response interface{}, status int) error {
 	respJson, err := json.Marshal(response)
 	if err != nil {
 		return err

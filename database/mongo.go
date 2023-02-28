@@ -19,10 +19,13 @@ func (c Client) Get(ctx context.Context, code string) (entities.Currency, error)
 	return currency, err
 }
 
-func (c Client) Create(ctx context.Context, currency entities.Currency) error {
+func (c Client) Create(ctx context.Context, currency entities.Currency) (interface{}, error) {
 	currency.UpdatedAt = time.Now()
-	_, err := c.Collection.InsertOne(ctx, currency)
-	return err
+	res, err := c.Collection.InsertOne(ctx, currency)
+	if err != nil {
+		return nil, err
+	}
+	return res.InsertedID, nil
 }
 
 func (c Client) UpInsert(ctx context.Context, currency entities.Currency) error {

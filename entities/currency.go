@@ -14,7 +14,7 @@ type Currency struct {
 
 type CurrencyRepository interface {
 	Get(ctx context.Context, code string) (Currency, error)
-	Create(ctx context.Context, currency Currency) error
+	Create(ctx context.Context, currency Currency) (interface{}, error)
 	UpInsert(ctx context.Context, currency Currency) error
 	Update(ctx context.Context, code string, currency Currency) error
 	Delete(ctx context.Context, code string) error

@@ -10,9 +10,13 @@ type CurrencyUseCase struct {
 	QuotationClient    external.QuotationClient
 }
 
-type CurrencyResponse struct {
+type CurrencyConversionResponse struct {
 	Value    float64 `json:"value"`
 	Currency string  `json:"currency"`
+}
+
+type NewCurrencyResponse struct {
+	Id interface{} `json:"_id"`
 }
 
 type CurrencyRequest struct {
