@@ -35,8 +35,31 @@ func (c *Client) UpInsert(ctx context.Context, currency entities.Currency) error
 	return err
 }
 
+func (c *Client) Update(ctx context.Context, code string, currency entities.Currency) error {
+	filter := bson.M{"code": code}
+
+	var updatedCurrency bson.M
+	if currency.Name != "" {
+		updatedCurrency["name"] = currency.Name
+	}
+	updatedCurrency["USDConvertionRate"] = currency.USDConversionRate
+	updatedCurrency["updatedAt"] = time.Now()
+
+	res, err := c.Collection.UpdateOne(ctx, filter, bson.M{"$set": updatedCurrency})
+	if res.MatchedCount == 0 {
+		return entities.ErrCurrencyNotFound
+	}
+
+	return err
+}
+
 func (c *Client) Delete(ctx context.Context, code string) error {
 	filter := bson.M{"code": code}
-	_, err := c.Collection.DeleteOne(ctx, filter)
+	res, err := c.Collection.DeleteOne(ctx, filter)
+
+	if res.DeletedCount == 0 {
+		return entities.ErrCurrencyNotFound
+	}
+
 	return err
 }

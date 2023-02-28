@@ -37,8 +37,8 @@ func main() {
 
 	r.Get("/currency", currencyController.GetConversionHandler)
 	r.Post("/currency/new", currencyController.NewCurrencyHandler)
-	r.Put("/currency/{code}", nil)
-	r.Delete("/currency/{code}", nil)
+	r.Put("/currency/{code}", currencyController.UpdateCurrencyHandler)
+	r.Delete("/currency/{code}", currencyController.DeleteCurrencyHandler)
 
 	http.ListenAndServe(":8080", r)
 }
