@@ -1,14 +1,15 @@
 package handlers
 
 import (
-	"encoding/json"
+	"github.com/lumacielz/challenge-bravo/presenters"
 	"github.com/lumacielz/challenge-bravo/useCases"
 	"net/http"
 	"strconv"
 )
 
 type CurrencyController struct {
-	UseCase useCases.CurrencyUseCase
+	UseCase   useCases.CurrencyUseCase
+	Presenter presenters.CurrencyOutput
 }
 
 func (c CurrencyController) GetConversionHandler(w http.ResponseWriter, r *http.Request) {
@@ -21,11 +22,8 @@ func (c CurrencyController) GetConversionHandler(w http.ResponseWriter, r *http.
 	resp, err := c.UseCase.Convert(ctx, amount, from, to)
 
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		c.Presenter.WriteError(w, err, 500)
 	}
 
-	//TODO tratar erro
-	respJson, err := json.Marshal(resp)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(respJson)
+	c.Presenter.WriteResponse(w, resp)
 }

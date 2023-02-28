@@ -6,6 +6,7 @@ import (
 	"github.com/lumacielz/challenge-bravo/database"
 	"github.com/lumacielz/challenge-bravo/external"
 	"github.com/lumacielz/challenge-bravo/handlers"
+	"github.com/lumacielz/challenge-bravo/presenters"
 	"github.com/lumacielz/challenge-bravo/useCases"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -30,7 +31,7 @@ func main() {
 
 	mongoClient := database.Client{Collection: collection}
 	currencyUseCase := useCases.CurrencyUseCase{CurrencyRepository: &mongoClient, QuotationClient: external.QuotationClient{http.DefaultClient}}
-	currencyController := handlers.CurrencyController{currencyUseCase}
+	currencyController := handlers.CurrencyController{UseCase: currencyUseCase, Presenter: presenters.JsonPresenter{}}
 
 	r := chi.NewRouter()
 
