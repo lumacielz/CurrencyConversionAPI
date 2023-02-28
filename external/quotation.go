@@ -6,20 +6,20 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
-const baseUrl = "https://economia.awesomeapi.com.br/json/last/%s-USD"
+const baseUrl = "https://economia.awesomeapi.com.br/json/%s-USD"
 
 type QuotationAPIResp struct {
-	Code      string    `json:"code"`
-	CodeIn    string    `json:"codein"`
-	Ask       float64   `json:"ask"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	Code      string `json:"code"`
+	CodeIn    string `json:"codein"`
+	Name      string `json:"name"`
+	Ask       string `json:"ask"`
+	UpdatedAt string `json:"timestamp"`
 }
 
 type QuotationClient struct {
-	Client http.Client
+	Client *http.Client
 }
 
 func (c *QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code string) (*QuotationAPIResp, error) {
@@ -31,7 +31,7 @@ func (c *QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code strin
 		return nil, err
 	}
 
-	var q QuotationAPIResp
+	var q []QuotationAPIResp
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
@@ -41,6 +41,5 @@ func (c *QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code strin
 	if err != nil {
 		return nil, err
 	}
-
-	return &q, nil
+	return &q[0], nil
 }
