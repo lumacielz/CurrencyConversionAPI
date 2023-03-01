@@ -41,6 +41,11 @@ func (c QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code string
 		if err != nil {
 			return nil, err
 		}
+
+		if len(q) <= 0 {
+			return nil, entities.ErrCurrencyNotFound
+		}
+
 		return &q[0], nil
 	}
 }
