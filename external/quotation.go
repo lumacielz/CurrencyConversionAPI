@@ -4,25 +4,18 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/lumacielz/challenge-bravo/entities"
 	"io/ioutil"
 	"net/http"
 )
 
 const baseUrl = "https://economia.awesomeapi.com.br/json/%s-USD"
 
-type QuotationAPIResp struct {
-	Code      string `json:"code"`
-	CodeIn    string `json:"codein"`
-	Name      string `json:"name"`
-	Ask       string `json:"ask"`
-	UpdatedAt string `json:"timestamp"`
-}
-
 type QuotationClient struct {
 	Client *http.Client
 }
 
-func (c *QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code string) (*QuotationAPIResp, error) {
+func (c QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code string) (*entities.QuotationData, error) {
 	url := fmt.Sprintf(baseUrl, code)
 	//TODO add timeout
 	r, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -31,7 +24,7 @@ func (c *QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code strin
 		return nil, err
 	}
 
-	var q []QuotationAPIResp
+	var q []entities.QuotationData
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
