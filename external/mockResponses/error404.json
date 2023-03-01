@@ -1,0 +1,5 @@
+{
+    "status": 404,
+    "code": "CoinNotExists",
+    "message": "moeda nao encontrada BRL-BRL"
+}
