@@ -2,16 +2,18 @@ package useCases
 
 import (
 	"github.com/lumacielz/challenge-bravo/entities"
+	"time"
 )
 
 type CurrencyUseCase struct {
+	Now                 func() time.Time
 	CurrencyRepository  entities.CurrencyRepository
 	QuotationRepository entities.QuotationRepository
 }
 
 type CurrencyConversionResponse struct {
-	Value    float64 `json:"value"`
-	Currency string  `json:"currency"`
+	Value    string `json:"value"`
+	Currency string `json:"currency"`
 }
 
 type NewCurrencyResponse struct {

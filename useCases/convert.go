@@ -2,6 +2,7 @@ package useCases
 
 import (
 	"context"
+	"fmt"
 	"github.com/lumacielz/challenge-bravo/entities"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/sync/errgroup"
@@ -20,7 +21,7 @@ func (c CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to s
 	g, gCtx := errgroup.WithContext(ctx)
 	g.Go(func() error {
 		originCurrencyData, err := c.CurrencyRepository.Get(gCtx, from)
-		if shouldUpdateCurrencyData(originCurrencyData, err) {
+		if c.shouldUpdateCurrencyData(originCurrencyData, err) {
 			c.UpdateCurrencyData(ctx, from)
 			originCurrencyData, err = c.CurrencyRepository.Get(gCtx, from)
 		}
@@ -30,7 +31,7 @@ func (c CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to s
 	})
 	g.Go(func() error {
 		destinationCurrencyData, err := c.CurrencyRepository.Get(ctx, to)
-		if shouldUpdateCurrencyData(destinationCurrencyData, err) {
+		if c.shouldUpdateCurrencyData(destinationCurrencyData, err) {
 			c.UpdateCurrencyData(ctx, to)
 			destinationCurrencyData, err = c.CurrencyRepository.Get(ctx, to)
 		}
@@ -49,11 +50,15 @@ func (c CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to s
 
 	destinationValue := convert(originCurrencyData.USDConversionRate, destinationCurrencyData.USDConversionRate, amount)
 	response := CurrencyConversionResponse{
-		Value:    destinationValue,
+		Value:    fmt.Sprintf("%.3f", destinationValue),
 		Currency: to,
 	}
 
 	return response, nil
+}
+
+func (c CurrencyUseCase) shouldUpdateCurrencyData(currencyData entities.Currency, err error) bool {
+	return err == mongo.ErrNoDocuments || c.Now().After(currencyData.UpdatedAt.Add(30*time.Second))
 }
 
 //TODO revisar se faz sentido ignorar erro
@@ -67,16 +72,12 @@ func (c CurrencyUseCase) UpdateCurrencyData(ctx context.Context, code string) er
 	rate, _ := strconv.ParseFloat(resp.Ask, 64)
 
 	var name string
-	if names := strings.Split(resp.Name, "/"); len(names) > 0 {
+	if names := strings.Split(resp.Name, "/"); len(names) > 1 {
 		name = names[0]
 	}
 
 	err = c.CurrencyRepository.UpInsert(ctx, entities.Currency{Code: resp.Code, Name: name, USDConversionRate: rate})
 	return err
-}
-
-func shouldUpdateCurrencyData(currencyData entities.Currency, err error) bool {
-	return err == mongo.ErrNoDocuments || time.Now().After(currencyData.UpdatedAt.Add(30*time.Second))
 }
 
 func convert(originRate, destinationRate, amount float64) float64 {

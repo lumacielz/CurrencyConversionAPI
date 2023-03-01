@@ -43,10 +43,9 @@ func responseFromFile(w http.ResponseWriter, file string, status int) {
 }
 
 type QuotationMock struct {
-	Resp *entities.QuotationData
-	Err  error
+	Error error
 }
 
 func (q QuotationMock) GetCurrentUSDQuotation(ctx context.Context, code string) (*entities.QuotationData, error) {
-	return q.Resp, q.Err
+	return &entities.QuotationData{}, q.Error
 }

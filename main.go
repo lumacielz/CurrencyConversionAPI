@@ -11,6 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
+	"time"
 )
 
 func main() {
@@ -39,6 +40,7 @@ func main() {
 	}
 
 	currencyUseCase := useCases.CurrencyUseCase{
+		Now:                 func() time.Time { return time.Now() },
 		CurrencyRepository:  mongoClient,
 		QuotationRepository: quotationAPICLient,
 	}
