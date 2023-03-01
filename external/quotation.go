@@ -3,21 +3,18 @@ package external
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-    "github.com/lumacielz/challenge-bravo/entities"
-    "io/ioutil"
+	"github.com/lumacielz/challenge-bravo/entities"
+	"io/ioutil"
 	"net/http"
 )
-
-const baseUrl = "https://economia.awesomeapi.com.br/json/%s-USD"
 
 type QuotationClient struct {
 	Url    string
 	Client *http.Client
 }
 
-func (c *QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code string) (*QuotationAPIResp, error) {
+func (c QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code string) (*entities.QuotationData, error) {
 	url := fmt.Sprintf(c.Url, code)
 	//TODO add timeout
 	r, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -28,10 +25,11 @@ func (c *QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code strin
 
 	switch {
 	case resp.StatusCode == http.StatusNotFound:
-		return nil, errors.New("Coin not exists")
+		return nil, entities.ErrCurrencyNotFound
+
 	case resp.StatusCode != http.StatusOK:
-		text := fmt.Sprintf("QuotationAPI returned an unexpected status code: %s", resp.Status)
-		return nil, errors.New(text)
+		return nil, entities.ErrUnexpected(resp.Status)
+
 	default:
 		var q []entities.QuotationData
 		body, err := ioutil.ReadAll(resp.Body)

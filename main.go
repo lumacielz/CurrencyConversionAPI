@@ -14,7 +14,10 @@ import (
 )
 
 func main() {
+	//TODO passar para config
 	const uri = "mongodb://challenge-bravo:bravo123@localhost:27017"
+
+	const baseUrl = "https://economia.awesomeapi.com.br/json/%s-USD"
 
 	opts := options.Client().ApplyURI(uri)
 	client, err := mongo.Connect(context.Background(), opts)
@@ -30,8 +33,21 @@ func main() {
 	collection := client.Database("challenge-bravo").Collection("currencies")
 
 	mongoClient := database.Client{Collection: collection}
-	currencyUseCase := useCases.CurrencyUseCase{CurrencyRepository: mongoClient, QuotationRepository: external.QuotationClient{"",http.DefaultClient}}
-	currencyController := handlers.CurrencyController{UseCase: currencyUseCase, OutputPresenter: presenters.JsonPresenter{}, InputPresenter: presenters.JsonPresenter{}}
+	quotationAPICLient := external.QuotationClient{
+		Url:    baseUrl,
+		Client: http.DefaultClient,
+	}
+
+	currencyUseCase := useCases.CurrencyUseCase{
+		CurrencyRepository:  mongoClient,
+		QuotationRepository: quotationAPICLient,
+	}
+
+	currencyController := handlers.CurrencyController{
+		UseCase:         currencyUseCase,
+		OutputPresenter: presenters.JsonPresenter{},
+		InputPresenter:  presenters.JsonPresenter{},
+	}
 
 	r := chi.NewRouter()
 

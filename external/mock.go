@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/http/httptest"
+	"path/filepath"
+	"runtime"
 	"strings"
 )
 
 type QuotationMock struct{}
+
+var MockedServer = httptest.NewServer(QuotationMock{})
 
 func (m QuotationMock) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	paths := strings.Split(r.URL.Path, "/")
@@ -15,6 +20,8 @@ func (m QuotationMock) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch code {
 	case "error":
 		responseFromFile(w, "mockResponses/empty.json", 500)
+	case "notFound":
+		responseFromFile(w, "mockResponse/error404.jsom", 404)
 	default:
 		responseFromFile(w, "mockResponses/success.json", 200)
 	}
@@ -22,7 +29,8 @@ func (m QuotationMock) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func responseFromFile(w http.ResponseWriter, file string, status int) {
-	filePath := fmt.Sprintf("%s/%s", "/home/luizamaciel/estudos/challenge-bravo/external", file)
+	_, rootPath, _, _ := runtime.Caller(0)
+	filePath := fmt.Sprintf("%s/%s", filepath.Dir(rootPath), file)
 	body, _ := ioutil.ReadFile(filePath)
 
 	w.WriteHeader(status)
