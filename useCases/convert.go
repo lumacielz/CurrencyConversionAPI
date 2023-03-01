@@ -58,7 +58,7 @@ func (c CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to s
 
 //TODO revisar se faz sentido ignorar erro
 func (c CurrencyUseCase) UpdateCurrencyData(ctx context.Context, code string) error {
-	resp, err := c.QuotationRepository.GetCurrentUSDQuotation(ctx, code)
+	resp, err := c.QuotationClient.GetCurrentUSDQuotation(ctx, code)
 
 	if err != nil {
 		return err
