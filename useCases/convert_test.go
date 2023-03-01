@@ -14,7 +14,6 @@ import (
 func TestCurrencyUseCase_UpdateCurrencyData(t *testing.T) {
 	type args struct {
 		currencyRepositoryError  error
-		quotationRepositoryResp  *entities.QuotationData
 		quotationRepositoryError error
 	}
 	tests := []struct {
@@ -26,7 +25,6 @@ func TestCurrencyUseCase_UpdateCurrencyData(t *testing.T) {
 			name: "success",
 			args: args{
 				currencyRepositoryError:  nil,
-				quotationRepositoryResp:  &entities.QuotationData{Code: "OK"},
 				quotationRepositoryError: nil,
 			},
 			wantErr: nil,

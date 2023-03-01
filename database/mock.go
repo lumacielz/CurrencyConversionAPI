@@ -26,7 +26,10 @@ func (m Mock) Get(ctx context.Context, code string) (entities.Currency, error) {
 }
 
 func (m Mock) Create(ctx context.Context, currency entities.Currency) (interface{}, error) {
-	return currency.Code, m.Error
+	if m.Error != nil {
+		return nil, m.Error
+	}
+	return currency.Code, nil
 }
 
 func (m Mock) UpInsert(ctx context.Context, currency entities.Currency) error {
