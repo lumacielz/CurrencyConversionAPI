@@ -5,19 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+    "github.com/lumacielz/challenge-bravo/entities"
+    "io/ioutil"
 	"net/http"
 )
 
 const baseUrl = "https://economia.awesomeapi.com.br/json/%s-USD"
-
-type QuotationAPIResp struct {
-	Code      string `json:"code"`
-	CodeIn    string `json:"codein"`
-	Name      string `json:"name"`
-	Ask       string `json:"ask"`
-	UpdatedAt string `json:"timestamp"`
-}
 
 type QuotationClient struct {
 	Url    string
@@ -40,7 +33,7 @@ func (c *QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code strin
 		text := fmt.Sprintf("QuotationAPI returned an unexpected status code: %s", resp.Status)
 		return nil, errors.New(text)
 	default:
-		var q []QuotationAPIResp
+		var q []entities.QuotationData
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			return nil, err

@@ -2,12 +2,11 @@ package useCases
 
 import (
 	"github.com/lumacielz/challenge-bravo/entities"
-	"github.com/lumacielz/challenge-bravo/external"
 )
 
 type CurrencyUseCase struct {
-	CurrencyRepository entities.CurrencyRepository
-	QuotationClient    external.QuotationClient
+	CurrencyRepository  entities.CurrencyRepository
+	QuotationRepository entities.QuotationRepository
 }
 
 type CurrencyConversionResponse struct {
