@@ -25,3 +25,20 @@ type CurrencyRequest struct {
 	Name              string  `json:"name"`
 	USDConversionRate float64 `json:"USDConversionRate"`
 }
+
+func validateCurrency(currency CurrencyRequest) error {
+	if currency.Code == "" {
+		return entities.ErrCodeRequired
+	}
+	if currency.USDConversionRate <= 0 {
+		return entities.ErrZeroConversionRate
+	}
+	return nil
+}
+
+func validateUpdateRequest(request CurrencyRequest) error {
+	if request.USDConversionRate <= 0 {
+		return entities.ErrZeroConversionRate
+	}
+	return nil
+}

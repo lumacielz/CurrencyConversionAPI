@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/lumacielz/challenge-bravo/database"
+	"github.com/lumacielz/challenge-bravo/entities"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -24,7 +25,8 @@ func TestCurrencyUseCase_NewCurrency(t *testing.T) {
 			args: args{
 				currencyRepositoryError: nil,
 				currency: CurrencyRequest{
-					Code: "MyCoin",
+					Code:              "MyCoin",
+					USDConversionRate: 2.0,
 				},
 			},
 			want: NewCurrencyResponse{
@@ -33,10 +35,21 @@ func TestCurrencyUseCase_NewCurrency(t *testing.T) {
 			wantErr: nil,
 		},
 		{
-			name: "error",
+			name: "validation error",
+			args: args{
+				currencyRepositoryError: nil,
+				currency:                CurrencyRequest{},
+			},
+			wantErr: entities.ErrCodeRequired,
+		},
+		{
+			name: "error on database",
 			args: args{
 				currencyRepositoryError: errors.New("error inserting into database"),
-				currency:                CurrencyRequest{},
+				currency: CurrencyRequest{
+					Code:              "MyCoin",
+					USDConversionRate: 2.0,
+				},
 			},
 			want:    NewCurrencyResponse{},
 			wantErr: errors.New("error inserting into database"),
