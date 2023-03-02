@@ -102,7 +102,7 @@ func TestCurrencyController_NewCurrencyHandler(t *testing.T) {
 
 			root, _ := os.Getwd()
 			body, _ := ioutil.ReadFile(root + tt.args.bodyPath)
-			r := httptest.NewRequest("GET", "/", bytes.NewReader(body))
+			r := httptest.NewRequest("POST", "/", bytes.NewReader(body))
 			r = r.WithContext(tt.args.ctx)
 
 			c.NewCurrencyHandler(w, r)
