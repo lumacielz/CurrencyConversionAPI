@@ -61,7 +61,6 @@ func (c CurrencyUseCase) shouldUpdateCurrencyData(currencyData entities.Currency
 	return err == mongo.ErrNoDocuments || c.Now().After(currencyData.UpdatedAt.Add(30*time.Second))
 }
 
-//TODO revisar se faz sentido ignorar erro
 func (c CurrencyUseCase) UpdateCurrencyData(ctx context.Context, code string) error {
 	resp, err := c.QuotationRepository.GetCurrentUSDQuotation(ctx, code)
 
@@ -72,7 +71,7 @@ func (c CurrencyUseCase) UpdateCurrencyData(ctx context.Context, code string) er
 	rate, _ := strconv.ParseFloat(resp.Ask, 64)
 
 	var name string
-	if names := strings.Split(resp.Name, "/"); len(names) > 1 {
+	if names := strings.Split(resp.Name, "/"); len(names) > 0 {
 		name = names[0]
 	}
 
