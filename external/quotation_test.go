@@ -10,6 +10,8 @@ import (
 )
 
 func TestQuotationClient_GetCurrentUSDQuotation(t *testing.T) {
+	cancelledCtx, cancel := context.WithCancel(context.Background())
+	cancel()
 	type args struct {
 		ctx  context.Context
 		code string
@@ -43,6 +45,14 @@ func TestQuotationClient_GetCurrentUSDQuotation(t *testing.T) {
 			},
 			want:    nil,
 			wantErr: entities.ErrCurrencyNotFound,
+		},
+		{
+			name: "timeout",
+			args: args{
+				ctx: cancelledCtx,
+			},
+			want:    nil,
+			wantErr: entities.ErrQuotationAPITimeout,
 		},
 		{
 			name: "error not found",

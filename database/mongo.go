@@ -36,7 +36,6 @@ func (c Client) UpInsert(ctx context.Context, currency entities.Currency) error 
 	filter := bson.M{"code": currency.Code}
 
 	currency.UpdatedAt = time.Now()
-
 	_, err := c.Collection.UpdateOne(ctx, filter, bson.M{"$set": currency}, opts)
 	return err
 }

@@ -21,6 +21,7 @@ func main() {
 	const baseUrl = "https://economia.awesomeapi.com.br/json/%s-USD"
 
 	opts := options.Client().ApplyURI(uri)
+	//TODO add timeout
 	client, err := mongo.Connect(context.Background(), opts)
 	if err != nil {
 		panic(err)
