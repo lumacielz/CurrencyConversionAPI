@@ -67,6 +67,17 @@ func TestCurrencyController_GetConversionHandler(t *testing.T) {
 			},
 		},
 		{
+			name: "bad request invalid float",
+			args: args{
+				ctx:        context.Background(),
+				from:       "BRL",
+				to:         "",
+				amount:     "5bb",
+				wantStatus: http.StatusBadRequest,
+				wantPath:   "/responses/errAmountInvalid.json",
+			},
+		},
+		{
 			name: "timeout",
 			args: args{
 				ctx:        cancelledCtx,
@@ -105,9 +116,7 @@ func TestCurrencyController_GetConversionHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := CurrencyController{
 				UseCase: useCases.CurrencyUseCase{
-					Now: func() time.Time {
-						return time.Now()
-					},
+					Now:                 func() time.Time { return time.Now() },
 					CurrencyRepository:  database.Mock{Error: tt.args.repositoryError},
 					QuotationRepository: external.QuotationMock{},
 				},
@@ -128,10 +137,10 @@ func TestCurrencyController_GetConversionHandler(t *testing.T) {
 
 			c.GetConversionHandler(w, r)
 
-			body, _ := ioutil.ReadAll(w.Body)
+			respBody, _ := ioutil.ReadAll(w.Body)
 			root, _ := os.Getwd()
 			wantBody, _ := ioutil.ReadFile(root + tt.args.wantPath)
-			assert.Equal(t, string(wantBody), string(body))
+			assert.Equal(t, wantBody, respBody)
 			assert.Equal(t, tt.args.wantStatus, w.Code)
 		})
 	}
