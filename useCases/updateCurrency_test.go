@@ -2,6 +2,7 @@ package useCases
 
 import (
 	"context"
+	"errors"
 	"github.com/lumacielz/challenge-bravo/database"
 	"github.com/lumacielz/challenge-bravo/entities"
 	"github.com/stretchr/testify/assert"
@@ -11,6 +12,7 @@ import (
 func TestCurrencyUseCase_UpdateCurrency(t *testing.T) {
 	type args struct {
 		currencyRepositoryError error
+		code                    string
 		currency                CurrencyRequest
 	}
 	tests := []struct {
@@ -22,6 +24,7 @@ func TestCurrencyUseCase_UpdateCurrency(t *testing.T) {
 			name: "success",
 			args: args{
 				currencyRepositoryError: nil,
+				code:                    "BRL",
 				currency: CurrencyRequest{
 					Name:              "MyCoin",
 					USDConversionRate: 2.0,
@@ -38,9 +41,9 @@ func TestCurrencyUseCase_UpdateCurrency(t *testing.T) {
 			wantErr: entities.ErrZeroConversionRate,
 		},
 		{
-			name: "error on database",
+			name: "error not found",
 			args: args{
-				currencyRepositoryError: entities.ErrCurrencyNotFound,
+				code: "nf",
 				currency: CurrencyRequest{
 					Name:              "MyCoin",
 					USDConversionRate: 2.0,
@@ -48,13 +51,25 @@ func TestCurrencyUseCase_UpdateCurrency(t *testing.T) {
 			},
 			wantErr: entities.ErrCurrencyNotFound,
 		},
+		{
+			name: "error on database",
+			args: args{
+				currencyRepositoryError: errors.New("error updating"),
+				code:                    "BRL",
+				currency: CurrencyRequest{
+					Name:              "MyCoin",
+					USDConversionRate: 2.0,
+				},
+			},
+			wantErr: errors.New("error updating"),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := CurrencyUseCase{
 				CurrencyRepository: database.Mock{Error: tt.args.currencyRepositoryError},
 			}
-			err := c.UpdateCurrency(context.Background(), "", tt.args.currency)
+			err := c.UpdateCurrency(context.Background(), tt.args.code, tt.args.currency)
 			assert.Equal(t, tt.wantErr, err)
 		})
 	}

@@ -41,6 +41,10 @@ func (m Mock) UpInsert(ctx context.Context, currency entities.Currency) error {
 }
 
 func (m Mock) Update(ctx context.Context, code string, currency entities.Currency) error {
+	if _, ok := mockedDatabase[code]; !ok {
+		return entities.ErrCurrencyNotFound
+	}
+
 	return m.Error
 }
 

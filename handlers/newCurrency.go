@@ -44,9 +44,7 @@ func (c CurrencyController) NewCurrencyHandler(w http.ResponseWriter, r *http.Re
 		return
 	case err := <-errC:
 		switch err {
-		case entities.ErrCodeRequired:
-			status = http.StatusBadRequest
-		case entities.ErrZeroConversionRate:
+		case entities.ErrCodeRequired, entities.ErrZeroConversionRate:
 			status = http.StatusUnprocessableEntity
 		default:
 			status = http.StatusInternalServerError

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"github.com/go-chi/chi/v5"
 	"github.com/lumacielz/challenge-bravo/database"
 	"github.com/lumacielz/challenge-bravo/external"
 	"github.com/lumacielz/challenge-bravo/presenters"
@@ -17,11 +18,12 @@ import (
 	"time"
 )
 
-func TestCurrencyController_NewCurrencyHandler(t *testing.T) {
+func TestCurrencyController_UpdateCurrencyHandler(t *testing.T) {
 	cancelledCtx, cancel := context.WithCancel(context.Background())
 	cancel()
 	type args struct {
 		ctx             context.Context
+		code            string
 		bodyPath        string
 		repositoryError error
 		wantStatus      int
@@ -35,17 +37,10 @@ func TestCurrencyController_NewCurrencyHandler(t *testing.T) {
 			name: "success",
 			args: args{
 				ctx:        context.Background(),
+				code:       "BRL",
 				bodyPath:   "/requests/newCurrency.json",
-				wantStatus: http.StatusCreated,
-				wantPath:   "/responses/created.json",
-			},
-		},
-		{
-			name: "timeout",
-			args: args{
-				ctx:        cancelledCtx,
-				wantStatus: http.StatusRequestTimeout,
-				wantPath:   "/responses/errTimeout.json",
+				wantStatus: http.StatusNoContent,
+				wantPath:   "/responses/empty.json",
 			},
 		},
 		{
@@ -58,12 +53,11 @@ func TestCurrencyController_NewCurrencyHandler(t *testing.T) {
 			},
 		},
 		{
-			name: "validation error - code",
+			name: "timeout",
 			args: args{
-				ctx:        context.Background(),
-				bodyPath:   "/requests/currencyWithoutCode.json",
-				wantStatus: http.StatusUnprocessableEntity,
-				wantPath:   "/responses/errCodeRequired.json",
+				ctx:        cancelledCtx,
+				wantStatus: http.StatusRequestTimeout,
+				wantPath:   "/responses/errTimeout.json",
 			},
 		},
 		{
@@ -76,9 +70,20 @@ func TestCurrencyController_NewCurrencyHandler(t *testing.T) {
 			},
 		},
 		{
+			name: "currency not found",
+			args: args{
+				ctx:        context.Background(),
+				code:       "BL",
+				bodyPath:   "/requests/newCurrency.json",
+				wantStatus: http.StatusNotFound,
+				wantPath:   "/responses/errNotFound.json",
+			},
+		},
+		{
 			name: "internal server error",
 			args: args{
 				ctx:             context.Background(),
+				code:            "BRL",
 				bodyPath:        "/requests/newCurrency.json",
 				repositoryError: errors.New("unexpected error"),
 				wantStatus:      http.StatusInternalServerError,
@@ -102,10 +107,12 @@ func TestCurrencyController_NewCurrencyHandler(t *testing.T) {
 
 			root, _ := os.Getwd()
 			body, _ := ioutil.ReadFile(root + tt.args.bodyPath)
-			r := httptest.NewRequest("GET", "/", bytes.NewReader(body))
-			r = r.WithContext(tt.args.ctx)
+			r := httptest.NewRequest("PUT", "/", bytes.NewReader(body))
+			rctx := chi.NewRouteContext()
+			rctx.URLParams.Add("code", tt.args.code)
+			r = r.WithContext(context.WithValue(tt.args.ctx, chi.RouteCtxKey, rctx))
 
-			c.NewCurrencyHandler(w, r)
+			c.UpdateCurrencyHandler(w, r)
 
 			respBody, _ := ioutil.ReadAll(w.Body)
 			wantBody, _ := ioutil.ReadFile(root + tt.args.wantPath)
