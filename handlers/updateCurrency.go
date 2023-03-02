@@ -11,7 +11,7 @@ func (c CurrencyController) UpdateCurrencyHandler(w http.ResponseWriter, r *http
 	code := chi.URLParam(r, "code")
 
 	body, err := ioutil.ReadAll(r.Body)
-	currencyReq, err := c.InputPresenter.Parse(body)
+	currencyReq, err := c.InputPresenter.ParseRequest(body)
 
 	err = c.UseCase.UpdateCurrency(ctx, code, currencyReq)
 	if err != nil {

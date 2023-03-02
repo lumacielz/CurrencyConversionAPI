@@ -9,7 +9,7 @@ func (c CurrencyController) NewCurrencyHandler(w http.ResponseWriter, r *http.Re
 	ctx := r.Context()
 
 	body, err := ioutil.ReadAll(r.Body)
-	currencyReq, err := c.InputPresenter.Parse(body)
+	currencyReq, err := c.InputPresenter.ParseRequest(body)
 	insertedId, err := c.UseCase.NewCurrency(ctx, currencyReq)
 	if err != nil {
 		c.OutputPresenter.WriteError(w, err, 500)

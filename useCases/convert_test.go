@@ -76,11 +76,10 @@ func TestCurrencyUseCase_Convert(t *testing.T) {
 		{
 			name: "success with data up to date",
 			args: args{
-				mockedTime:              time.Date(2023, 03, 1, 18, 20, 10, 0, time.UTC),
-				currencyRepositoryError: nil,
-				amount:                  50,
-				from:                    "BRL",
-				to:                      "EUR",
+				mockedTime: time.Date(2023, 03, 1, 18, 20, 10, 0, time.UTC),
+				amount:     50,
+				from:       "BRL",
+				to:         "EUR",
 			},
 			want:    CurrencyConversionResponse{Value: "9.524", Currency: "EUR"},
 			wantErr: nil,
@@ -88,12 +87,10 @@ func TestCurrencyUseCase_Convert(t *testing.T) {
 		{
 			name: "success updating data",
 			args: args{
-				mockedTime:               time.Date(2023, 03, 1, 18, 31, 10, 0, time.UTC),
-				currencyRepositoryError:  nil,
-				quotationRepositoryError: nil,
-				amount:                   50,
-				from:                     "BRL",
-				to:                       "EUR",
+				mockedTime: time.Date(2023, 03, 1, 18, 31, 10, 0, time.UTC),
+				amount:     50,
+				from:       "BRL",
+				to:         "EUR",
 			},
 			want:    CurrencyConversionResponse{Value: "9.524", Currency: "EUR"},
 			wantErr: nil,
@@ -102,7 +99,6 @@ func TestCurrencyUseCase_Convert(t *testing.T) {
 			name: "error updating data - ignore and use old data",
 			args: args{
 				mockedTime:               time.Date(2023, 03, 1, 18, 31, 10, 0, time.UTC),
-				currencyRepositoryError:  nil,
 				quotationRepositoryError: errors.New("error"),
 				amount:                   50,
 				from:                     "BRL",
@@ -112,17 +108,27 @@ func TestCurrencyUseCase_Convert(t *testing.T) {
 			wantErr: nil,
 		},
 		{
-			name: "error getting from database",
+			name: "error not found on database",
 			args: args{
-				mockedTime:               time.Date(2023, 03, 1, 18, 31, 10, 0, time.UTC),
-				currencyRepositoryError:  entities.ErrCurrencyNotFound,
-				quotationRepositoryError: nil,
-				amount:                   50,
-				from:                     "BL",
-				to:                       "EUR",
+				mockedTime: time.Date(2023, 03, 1, 18, 31, 10, 0, time.UTC),
+				amount:     50,
+				from:       "BL",
+				to:         "EUR",
 			},
 			want:    CurrencyConversionResponse{},
 			wantErr: entities.ErrCurrencyNotFound,
+		},
+		{
+			name: "error getting from database",
+			args: args{
+				mockedTime:              time.Date(2023, 03, 1, 18, 31, 10, 0, time.UTC),
+				currencyRepositoryError: errors.New("erro"),
+				amount:                  50,
+				from:                    "BL",
+				to:                      "EUR",
+			},
+			want:    CurrencyConversionResponse{},
+			wantErr: errors.New("erro"),
 		},
 	}
 	for _, tt := range tests {

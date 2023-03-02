@@ -16,6 +16,9 @@ type Client struct {
 func (c Client) Get(ctx context.Context, code string) (entities.Currency, error) {
 	var currency entities.Currency
 	err := c.Collection.FindOne(ctx, bson.M{"code": code}).Decode(&currency)
+	if err == mongo.ErrNoDocuments {
+		err = entities.ErrCurrencyNotFound
+	}
 	return currency, err
 }
 

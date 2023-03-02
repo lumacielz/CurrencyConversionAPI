@@ -12,7 +12,7 @@ type CurrencyOutput interface {
 }
 
 type CurrencyInput interface {
-	Parse(body []byte) (useCases.CurrencyRequest, error)
+	ParseRequest(body []byte) (useCases.CurrencyRequest, error)
 }
 
 type JsonFormatError struct {
@@ -21,7 +21,7 @@ type JsonFormatError struct {
 
 type JsonPresenter struct{}
 
-func (p JsonPresenter) Parse(body []byte) (useCases.CurrencyRequest, error) {
+func (p JsonPresenter) ParseRequest(body []byte) (useCases.CurrencyRequest, error) {
 	var req useCases.CurrencyRequest
 	err := json.Unmarshal(body, &req)
 	return req, err

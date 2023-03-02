@@ -22,7 +22,11 @@ func (m Mock) Get(ctx context.Context, code string) (entities.Currency, error) {
 		return currency, nil
 	}
 
-	return entities.Currency{}, m.Error
+	if m.Error != nil {
+		return entities.Currency{}, m.Error
+	}
+
+	return entities.Currency{}, entities.ErrCurrencyNotFound
 }
 
 func (m Mock) Create(ctx context.Context, currency entities.Currency) (interface{}, error) {
