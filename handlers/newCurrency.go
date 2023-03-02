@@ -13,7 +13,7 @@ func (c CurrencyController) NewCurrencyHandler(w http.ResponseWriter, r *http.Re
 	ctx, cancel := context.WithTimeout(r.Context(), 500*time.Millisecond)
 	defer cancel()
 
-	respC := make(chan useCases.NewCurrencyResponse)
+	respC := make(chan *useCases.NewCurrencyResponse)
 	errC := make(chan error, 1)
 	go func() {
 		defer close(errC)

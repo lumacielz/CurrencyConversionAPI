@@ -21,7 +21,6 @@ func init() {
 }
 
 func main() {
-	const baseUrl = "https://economia.awesomeapi.com.br/json/%s-USD"
 	databaseCfg := viper.GetStringMapString("database")
 	opts := options.Client().ApplyURI(databaseCfg["uri"])
 	client, err := mongo.Connect(context.Background(), opts)

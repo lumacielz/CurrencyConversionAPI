@@ -21,7 +21,7 @@ func (c CurrencyController) GetConversionHandler(w http.ResponseWriter, r *http.
 	ctx, cancel := context.WithTimeout(r.Context(), c.Timeout)
 	defer cancel()
 
-	respC := make(chan useCases.CurrencyConversionResponse)
+	respC := make(chan *useCases.CurrencyConversionResponse)
 	errC := make(chan error, 1)
 	go func() {
 		defer close(errC)

@@ -5,10 +5,10 @@ import (
 	"github.com/lumacielz/challenge-bravo/entities"
 )
 
-func (c CurrencyUseCase) NewCurrency(ctx context.Context, currency CurrencyRequest) (NewCurrencyResponse, error) {
+func (c CurrencyUseCase) NewCurrency(ctx context.Context, currency CurrencyRequest) (*NewCurrencyResponse, error) {
 	err := validateCurrency(currency)
 	if err != nil {
-		return NewCurrencyResponse{}, err
+		return nil, err
 	}
 
 	currencyEntity := entities.Currency{
@@ -17,5 +17,5 @@ func (c CurrencyUseCase) NewCurrency(ctx context.Context, currency CurrencyReque
 		USDConversionRate: currency.USDConversionRate,
 	}
 	id, err := c.CurrencyRepository.Create(ctx, currencyEntity)
-	return NewCurrencyResponse{Id: id}, err
+	return &NewCurrencyResponse{Id: id}, err
 }

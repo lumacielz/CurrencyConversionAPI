@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func (c CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to string) (CurrencyConversionResponse, error) {
+func (c CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to string) (*CurrencyConversionResponse, error) {
 	originCurrencyDataC := make(chan entities.Currency, 1)
 	destinationCurrencyDataC := make(chan entities.Currency, 1)
 
@@ -41,7 +41,7 @@ func (c CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to s
 
 	err := g.Wait()
 	if err != nil {
-		return CurrencyConversionResponse{}, err
+		return nil, err
 	}
 
 	originCurrencyData := <-originCurrencyDataC
@@ -53,7 +53,7 @@ func (c CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to s
 		Currency: to,
 	}
 
-	return response, nil
+	return &response, nil
 }
 
 func (c CurrencyUseCase) shouldUpdateCurrencyData(currencyData entities.Currency, err error) bool {
