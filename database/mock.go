@@ -49,5 +49,8 @@ func (m Mock) Update(ctx context.Context, code string, currency entities.Currenc
 }
 
 func (m Mock) Delete(ctx context.Context, code string) error {
+	if _, ok := mockedDatabase[code]; !ok {
+		return entities.ErrCurrencyNotFound
+	}
 	return m.Error
 }

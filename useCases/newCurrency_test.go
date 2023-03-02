@@ -23,7 +23,6 @@ func TestCurrencyUseCase_NewCurrency(t *testing.T) {
 		{
 			name: "success",
 			args: args{
-				currencyRepositoryError: nil,
 				currency: CurrencyRequest{
 					Code:              "MyCoin",
 					USDConversionRate: 2.0,
@@ -37,8 +36,7 @@ func TestCurrencyUseCase_NewCurrency(t *testing.T) {
 		{
 			name: "validation error",
 			args: args{
-				currencyRepositoryError: nil,
-				currency:                CurrencyRequest{},
+				currency: CurrencyRequest{},
 			},
 			wantErr: entities.ErrCodeRequired,
 		},
