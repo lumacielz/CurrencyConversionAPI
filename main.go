@@ -39,7 +39,7 @@ func main() {
 
 	mongoClient := database.Client{Collection: collection}
 	quotationAPICLient := external.QuotationClient{
-		Url:     viper.GetString("external.quoationAPI.url"),
+		Url:     viper.GetString("external.quotationAPI.url"),
 		Timeout: viper.GetDuration("external.quotationAPI.timeout"),
 		Client:  http.DefaultClient,
 	}
