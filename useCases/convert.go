@@ -8,7 +8,6 @@ import (
 	"golang.org/x/sync/errgroup"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func (c CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to string) (CurrencyConversionResponse, error) {
@@ -58,7 +57,7 @@ func (c CurrencyUseCase) Convert(ctx context.Context, amount float64, from, to s
 }
 
 func (c CurrencyUseCase) shouldUpdateCurrencyData(currencyData entities.Currency, err error) bool {
-	return err == mongo.ErrNoDocuments || c.Now().After(currencyData.UpdatedAt.Add(30*time.Second))
+	return err == mongo.ErrNoDocuments || c.Now().After(currencyData.UpdatedAt.Add(c.UpdateFrequency))
 }
 
 func (c CurrencyUseCase) UpdateCurrencyData(ctx context.Context, code string) error {

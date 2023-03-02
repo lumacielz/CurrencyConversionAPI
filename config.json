@@ -1,0 +1,15 @@
+{
+    "database": {
+        "uri": "mongodb://challenge-bravo:bravo123@localhost:27017",
+        "name": "challenge-bravo",
+        "collection": "currencies"
+    },
+    "external": {
+        "quotationAPI": {
+            "url": "https://economia.awesomeapi.com.br/json/%s-USD",
+            "timeout": "200ms"
+        }
+    },
+    "timeout": "500ms",
+    "updateFrequency": "30s"
+}

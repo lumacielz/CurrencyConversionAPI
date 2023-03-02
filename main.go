@@ -8,20 +8,22 @@ import (
 	"github.com/lumacielz/challenge-bravo/handlers"
 	"github.com/lumacielz/challenge-bravo/presenters"
 	"github.com/lumacielz/challenge-bravo/useCases"
+	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
 	"time"
 )
 
+func init() {
+	viper.SetConfigFile("config.json")
+	viper.ReadInConfig()
+}
+
 func main() {
-	//TODO passar para config
-	const uri = "mongodb://challenge-bravo:bravo123@localhost:27017"
-
 	const baseUrl = "https://economia.awesomeapi.com.br/json/%s-USD"
-
-	opts := options.Client().ApplyURI(uri)
-	//TODO add timeout
+	databaseCfg := viper.GetStringMapString("database")
+	opts := options.Client().ApplyURI(databaseCfg["uri"])
 	client, err := mongo.Connect(context.Background(), opts)
 	if err != nil {
 		panic(err)
@@ -32,16 +34,19 @@ func main() {
 			panic(err)
 		}
 	}()
-	collection := client.Database("challenge-bravo").Collection("currencies")
+
+	collection := client.Database(databaseCfg["name"]).Collection(databaseCfg["collection"])
 
 	mongoClient := database.Client{Collection: collection}
 	quotationAPICLient := external.QuotationClient{
-		Url:    baseUrl,
-		Client: http.DefaultClient,
+		Url:     viper.GetString("external.quoationAPI.url"),
+		Timeout: viper.GetDuration("external.quotationAPI.timeout"),
+		Client:  http.DefaultClient,
 	}
 
 	currencyUseCase := useCases.CurrencyUseCase{
 		Now:                 func() time.Time { return time.Now() },
+		UpdateFrequency:     viper.GetDuration("updateFrequency"),
 		CurrencyRepository:  mongoClient,
 		QuotationRepository: quotationAPICLient,
 	}
@@ -50,6 +55,7 @@ func main() {
 		UseCase:         currencyUseCase,
 		OutputPresenter: presenters.JsonPresenter{},
 		InputPresenter:  presenters.JsonPresenter{},
+		Timeout:         viper.GetDuration("timeout"),
 	}
 
 	r := chi.NewRouter()

@@ -12,12 +12,13 @@ import (
 )
 
 type QuotationClient struct {
-	Url    string
-	Client *http.Client
+	Url     string
+	Timeout time.Duration
+	Client  *http.Client
 }
 
 func (c QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code string) (*entities.QuotationData, error) {
-	ctx, cancel := context.WithTimeout(ctx, 200*time.Millisecond)
+	ctx, cancel := context.WithTimeout(ctx, c.Timeout)
 	defer cancel()
 
 	url := fmt.Sprintf(c.Url, code)

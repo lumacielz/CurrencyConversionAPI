@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
+	"time"
 )
 
 func TestQuotationClient_GetCurrentUSDQuotation(t *testing.T) {
@@ -76,8 +77,9 @@ func TestQuotationClient_GetCurrentUSDQuotation(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := QuotationClient{
-				Client: http.DefaultClient,
-				Url:    fmt.Sprintf("%s/json/%s", MockedServer.URL, "%s-USD"),
+				Client:  http.DefaultClient,
+				Url:     fmt.Sprintf("%s/json/%s", MockedServer.URL, "%s-USD"),
+				Timeout: 5 * time.Second,
 			}
 			got, err := c.GetCurrentUSDQuotation(tt.args.ctx, tt.args.code)
 			assert.Equal(t, tt.want, got)

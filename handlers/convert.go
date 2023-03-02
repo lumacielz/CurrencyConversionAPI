@@ -14,10 +14,11 @@ type CurrencyController struct {
 	UseCase         useCases.CurrencyUseCase
 	OutputPresenter presenters.CurrencyOutput
 	InputPresenter  presenters.CurrencyInput
+	Timeout         time.Duration
 }
 
 func (c CurrencyController) GetConversionHandler(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), 50000*time.Millisecond)
+	ctx, cancel := context.WithTimeout(r.Context(), c.Timeout)
 	defer cancel()
 
 	respC := make(chan useCases.CurrencyConversionResponse)

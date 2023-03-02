@@ -7,6 +7,7 @@ import (
 
 type CurrencyUseCase struct {
 	Now                 func() time.Time
+	UpdateFrequency     time.Duration
 	CurrencyRepository  entities.CurrencyRepository
 	QuotationRepository entities.QuotationRepository
 }
