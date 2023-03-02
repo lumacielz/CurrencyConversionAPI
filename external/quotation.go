@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/lumacielz/challenge-bravo/entities"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -46,6 +47,7 @@ func (c QuotationClient) GetCurrentUSDQuotation(ctx context.Context, code string
 			return nil, entities.ErrCurrencyNotFound
 
 		case resp.StatusCode != http.StatusOK:
+			log.Error(resp)
 			return nil, entities.ErrUnexpected(resp.Status)
 
 		default:

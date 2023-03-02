@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"github.com/lumacielz/challenge-bravo/entities"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -17,6 +18,7 @@ func (c Client) Get(ctx context.Context, code string) (entities.Currency, error)
 	var currency entities.Currency
 	err := c.Collection.FindOne(ctx, bson.M{"code": code}).Decode(&currency)
 	if err == mongo.ErrNoDocuments {
+		log.Error(err)
 		err = entities.ErrCurrencyNotFound
 	}
 	return currency, err
@@ -26,6 +28,7 @@ func (c Client) Create(ctx context.Context, currency entities.Currency) (interfa
 	currency.UpdatedAt = time.Now()
 	res, err := c.Collection.InsertOne(ctx, currency)
 	if err != nil {
+		log.Error(err)
 		return nil, err
 	}
 	return res.InsertedID, nil
