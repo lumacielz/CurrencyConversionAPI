@@ -17,5 +17,8 @@ func (c CurrencyUseCase) NewCurrency(ctx context.Context, currency CurrencyReque
 		USDConversionRate: currency.USDConversionRate,
 	}
 	id, err := c.CurrencyRepository.Create(ctx, currencyEntity)
-	return &NewCurrencyResponse{Id: id}, err
+	if err != nil {
+		return nil, err
+	}
+	return &NewCurrencyResponse{Id: id}, nil
 }

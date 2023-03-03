@@ -70,7 +70,7 @@ func TestCurrencyUseCase_Convert(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    CurrencyConversionResponse
+		want    *CurrencyConversionResponse
 		wantErr error
 	}{
 		{
@@ -81,7 +81,7 @@ func TestCurrencyUseCase_Convert(t *testing.T) {
 				from:       "BRL",
 				to:         "EUR",
 			},
-			want:    CurrencyConversionResponse{Value: "9.524", Currency: "EUR"},
+			want:    &CurrencyConversionResponse{Value: "9.524", Currency: "EUR"},
 			wantErr: nil,
 		},
 		{
@@ -92,7 +92,7 @@ func TestCurrencyUseCase_Convert(t *testing.T) {
 				from:       "BRL",
 				to:         "EUR",
 			},
-			want:    CurrencyConversionResponse{Value: "9.524", Currency: "EUR"},
+			want:    &CurrencyConversionResponse{Value: "9.524", Currency: "EUR"},
 			wantErr: nil,
 		},
 		{
@@ -104,7 +104,7 @@ func TestCurrencyUseCase_Convert(t *testing.T) {
 				from:                     "BRL",
 				to:                       "EUR",
 			},
-			want:    CurrencyConversionResponse{Value: "9.524", Currency: "EUR"},
+			want:    &CurrencyConversionResponse{Value: "9.524", Currency: "EUR"},
 			wantErr: nil,
 		},
 		{
@@ -115,7 +115,7 @@ func TestCurrencyUseCase_Convert(t *testing.T) {
 				from:       "BL",
 				to:         "EUR",
 			},
-			want:    CurrencyConversionResponse{},
+			want:    nil,
 			wantErr: entities.ErrCurrencyNotFound,
 		},
 		{
@@ -127,7 +127,7 @@ func TestCurrencyUseCase_Convert(t *testing.T) {
 				from:                    "BL",
 				to:                      "EUR",
 			},
-			want:    CurrencyConversionResponse{},
+			want:    nil,
 			wantErr: errors.New("erro"),
 		},
 	}

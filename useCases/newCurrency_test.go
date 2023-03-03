@@ -17,7 +17,7 @@ func TestCurrencyUseCase_NewCurrency(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    NewCurrencyResponse
+		want    *NewCurrencyResponse
 		wantErr error
 	}{
 		{
@@ -28,7 +28,7 @@ func TestCurrencyUseCase_NewCurrency(t *testing.T) {
 					USDConversionRate: 2.0,
 				},
 			},
-			want: NewCurrencyResponse{
+			want: &NewCurrencyResponse{
 				Id: "MyCoin",
 			},
 			wantErr: nil,
@@ -49,7 +49,7 @@ func TestCurrencyUseCase_NewCurrency(t *testing.T) {
 					USDConversionRate: 2.0,
 				},
 			},
-			want:    NewCurrencyResponse{},
+			want:    nil,
 			wantErr: errors.New("error inserting into database"),
 		},
 	}
