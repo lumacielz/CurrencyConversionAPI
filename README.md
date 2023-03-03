@@ -9,7 +9,8 @@ A documentação detalhada da API está disponível em:
 
 A aplicação foi desenvolvida em Go, utilizando conceitos de Clean Architecture. Foram utilizadas algumas bibliotecas como o router <b>chi</b> e alguns utilitários como o <b>viper</b> para arquivos de config e o <b>logrus</b> para logs.
 
-Os dados de cotação são consumidos da API pública de cotação de moedas <a href="https://docs.awesomeapi.com.br/api-de-moedas">Awesome API</a> e salvos em uma collection no mongoDB Atlas. Segundo a
+Os dados de cotação são consumidos da API pública de cotação de moedas <a href="https://docs.awesomeapi.com.br/api-de-moedas">Awesome API</a>
+e salvos em uma collection no <b>mongoDB Atlas</b>. Segundo a
 documentação da API, os dados são atualizados a cada 30 segundos, dessa forma, a cada query de busca por uma moeda,
 a aplicação verifica se os dados de cotação estão atualizados, e os atualiza caso negativo.
 
@@ -23,7 +24,7 @@ código da moeda é único no banco, e se a taxa de conversão
 ## Running
 
 - <b>Makefile:</b> - necessita uma versão do Go instalada
-o
+
 ```bash
 $ make run
  ```
@@ -35,7 +36,7 @@ $ docker build -t challenge-bravo .
 $ docker run -p 8080:8080 challenge-bravo
  ```
 
-O servidor será iniciado no endereço <b>localhost:8080</b>.
+Após executar um dos comandos, o servidor será iniciado no endereço <b>localhost:8080</b>.
 
 ## Testing
 - <b>Makefile</b>:
