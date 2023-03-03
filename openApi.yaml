@@ -1,0 +1,181 @@
+openapi: 3.0.3
+info:
+    title: API de Conversão Monetária - OpenAPI 3.0
+    description:
+        API Rest responsável por realizar conversão entre moedas. Moedas reais como dólar, euro e bitcoin já são contempladas. Também é possível incluir moedas customizadas.
+    version: 1.0.11
+servers:
+    - url: localhost:8080
+tags:
+    - name: currency
+      description: Recurso responsável por lidar com moedas
+
+paths:
+    /currency/convert:
+        get:
+            tags:
+                - currency
+            summary: Converte o valor passado de uma moeda para outra
+            parameters:
+                - name: from
+                  in: query
+                  description: Moeda de origem
+                  required: true
+                  schema:
+                      type: string
+                      enum:
+                          - USD
+                          - BRL
+                          - BTC
+                - name: to
+                  in: query
+                  description: Moeda de destino
+                  required: true
+                  schema:
+                      type: string
+                      enum:
+                          - USD
+                          - BRL
+                          - BTC
+                - name: amount
+                  in: query
+                  description: Valor a ser convertido
+                  required: true
+                  schema:
+                      type: number
+
+            responses:
+                '200':
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Conversion'
+                '400':
+                    description: Parâmetro(s) inválido(s)
+                '404':
+                    description: Uma das moedas não existe
+                '408':
+                    description: Erro de timeout
+                '500':
+                    description: Erro de servidor
+
+    /currency/new:
+        post:
+            tags:
+                - currency
+            summary: Cria nova moeda
+            requestBody:
+                description: Dados da moeda a ser criada
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Currency'
+            responses:
+                '201':
+                    description: Criada com sucesso
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/NewCurrency'
+                '422':
+                    description: Erro de validação
+                '408':
+                    description: Erro de timeout
+                '500':
+                    description: Erro de servidor
+
+    /currency/{code}:
+        put:
+            tags:
+                - currency
+            summary: Edita uma moeda existente
+            parameters:
+                - name: code
+                  in: path
+                  description: Código da moeda a ser editada
+                  required: true
+                  schema:
+                      type: string
+                      enum:
+                          - USD
+                          - BRL
+                          - BTC
+            requestBody:
+                description: Dados da moeda a ser editada
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Currency'
+            responses:
+                '204':
+                    description: Editada com sucesso
+                '404':
+                    description: Moeda não encontrada
+                '422':
+                    description: Erro de validação
+                '408':
+                    description: Erro de timeout
+                '500':
+                    description: Erro de servidor
+
+        delete:
+            tags:
+                - currency
+            summary: Deleta uma moeda existente
+            parameters:
+                - name: code
+                  in: path
+                  description: Código da moeda a ser editada
+                  required: true
+                  schema:
+                      type: string
+                      enum:
+                          - USD
+                          - BRL
+                          - BTC
+            responses:
+                '204':
+                    description: Deletada com sucesso
+                '404':
+                    description: Moeda não encontrada
+                '408':
+                    description: Erro de timeout
+                '500':
+                    description: Erro de servidor
+
+
+components:
+    schemas:
+        Currency:
+            type: object
+            properties:
+                code:
+                    type: string
+                    example: EUR
+                name:
+                    type: string
+                    example: Euro
+                USDConversionRate:
+                    type: number
+                    example: 1.056
+        Conversion:
+            type: object
+            properties:
+                value:
+                    type: string
+                    example: 50.5
+                currency:
+                    type: string
+                    example: BTC
+
+        NewCurrency:
+            type: object
+            properties:
+                _id:
+                    type: string
+                    example: 640138625785f03c3c794382

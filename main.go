@@ -59,7 +59,7 @@ func main() {
 
 	r := chi.NewRouter()
 
-	r.Get("/currency", currencyController.GetConversionHandler)
+	r.Get("/currency/convert", currencyController.GetConversionHandler)
 	r.Post("/currency/new", currencyController.NewCurrencyHandler)
 	r.Put("/currency/{code}", currencyController.UpdateCurrencyHandler)
 	r.Delete("/currency/{code}", currencyController.DeleteCurrencyHandler)
