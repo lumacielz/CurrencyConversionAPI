@@ -5,7 +5,7 @@ API Rest que lida com conversão monetária. Suporta moedas reais e customizadas
 ## Documentation
 A documentação detalhada da API está disponível em:
 
-- <a>https://lumacielz.github.io/challenge-bravo </a>
+- <a>https://lumacielz.github.io/currency-conversionAPI-docs/ </a>
 
 A aplicação foi desenvolvida em Go, utilizando conceitos de Clean Architecture. Foram utilizadas algumas bibliotecas como o router <b>chi</b> e alguns utilitários como o <b>viper</b> para arquivos de config e o <b>logrus</b> para logs.
 
