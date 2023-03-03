@@ -7,11 +7,10 @@ import (
 	"github.com/lumacielz/challenge-bravo/useCases"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 func (c CurrencyController) UpdateCurrencyHandler(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), 500*time.Millisecond)
+	ctx, cancel := context.WithTimeout(r.Context(), c.Timeout)
 	defer cancel()
 
 	errC := make(chan error, 1)

@@ -6,11 +6,10 @@ import (
 	"github.com/lumacielz/challenge-bravo/entities"
 	"github.com/lumacielz/challenge-bravo/useCases"
 	"net/http"
-	"time"
 )
 
 func (c CurrencyController) DeleteCurrencyHandler(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), 500*time.Millisecond)
+	ctx, cancel := context.WithTimeout(r.Context(), c.Timeout)
 	defer cancel()
 
 	errC := make(chan error, 1)

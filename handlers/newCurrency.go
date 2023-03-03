@@ -6,11 +6,10 @@ import (
 	"github.com/lumacielz/challenge-bravo/useCases"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 func (c CurrencyController) NewCurrencyHandler(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), 500*time.Millisecond)
+	ctx, cancel := context.WithTimeout(r.Context(), c.Timeout)
 	defer cancel()
 
 	respC := make(chan *useCases.NewCurrencyResponse)

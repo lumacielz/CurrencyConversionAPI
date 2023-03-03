@@ -10,6 +10,6 @@
             "timeout": "200ms"
         }
     },
-    "timeout": "800ms",
+    "timeout": "900ms",
     "updateFrequency": "30s"
 }
