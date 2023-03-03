@@ -78,6 +78,7 @@ func TestCurrencyController_DeleteCurrencyHandler(t *testing.T) {
 				},
 				OutputPresenter: presenters.JsonPresenter{},
 				InputPresenter:  presenters.JsonPresenter{},
+				Timeout:         5 * time.Second,
 			}
 
 			w := httptest.NewRecorder()
