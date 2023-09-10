@@ -32,8 +32,8 @@ $ make run
 - <b>Docker</b>
 
 ```bash
-$ docker build -t challenge-bravo .
-$ docker run -p 8080:8080 challenge-bravo
+$ docker build -t c-api .
+$ docker run -p 8080:8080 c-api
  ```
 
 Após executar um dos comandos, o servidor será iniciado no endereço <b>localhost:8080</b>.
